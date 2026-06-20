@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golf Score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green-dark:#1c3220;
+  --green-mid:#2d5a35;
+  --green-bright:#4a8c57;
+  --green-light:#e8f2e9;
+  --gold:#c8a44a;
+  --cream:#f7f4ef;
+  --white:#ffffff;
+  --ink:#1a1a1a;
+  --ink-mid:#4a4a4a;
+  --ink-light:#8a8a8a;
+  --border:#e0dbd2;
+  --eagle:#c8a44a;
+  --birdie:#c0392b;
+  --bogey:#2980b9;
+  --double:#1a5276;
+  --triple:#0d2137;
+}
+html{font-size:16px}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+.site-header{
+  background:var(--green-dark);
+  padding:0 24px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.header-inner{
+  max-width:820px;
+  margin:0 auto;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;
+  font-weight:600;
+  color:var(--white);
+  letter-spacing:1px;
+}
+.logo span{color:var(--gold)}
+.header-actions{display:flex;gap:8px}
+.icon-btn{
+  width:36px;height:36px;
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:8px;
+  background:transparent;
+  color:rgba(255,255,255,0.7);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  transition:all .2s;
+}
+.icon-btn:hover{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.3)}
+
+/* ── HERO ── */
+.hero{
+  background:var(--green-dark);
+  padding:32px 24px 40px;
+}
+.hero-inner{
+  max-width:820px;
+  margin:0 auto;
+}
+.round-fields{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-top:4px;
+}
+.field-group label{
+  display:block;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.4);
+  margin-bottom:6px;
+}
+.field-group input{
+  width:100%;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:8px;
+  padding:10px 14px;
+  color:#fff;
+  font-size:14px;
+  font-family:'Inter',sans-serif;
+  transition:all .2s;
+  outline:none;
+}
+.field-group input:focus{
+  background:rgba(255,255,255,0.11);
+  border-color:rgba(200,164,74,0.5);
+  box-shadow:0 0 0 3px rgba(200,164,74,0.1);
+}
+.field-group input::placeholder{color:rgba(255,255,255,0.25)}
+.field-group input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6)}
+
+/* ── SCORE SUMMARY STRIP ── */
+.summary-strip{
+  background:var(--green-mid);
+  border-bottom:1px solid rgba(0,0,0,0.08);
+}
+.summary-strip-inner{
+  max-width:820px;
+  margin:0 auto;
+  padding:0 24px;
+  display:flex;
+  gap:0;
+  overflow-x:auto;
+}
+.strip-item{
+  flex:1;
+  min-width:80px;
+  text-align:center;
+  padding:14px 8px;
+  border-right:1px solid rgba(255,255,255,0.08);
+  cursor:default;
+}
+.strip-item:last-child{border-right:none}
+.strip-val{
+  font-size:20px;
+  font-weight:500;
+  color:#fff;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.strip-val.diff-under{color:#e8a090}
+.strip-val.diff-over{color:#90b8e8}
+.strip-val.diff-even{color:var(--gold)}
+.strip-lbl{
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.45);
+  margin-top:4px;
+}
+
+/* ── MAIN LAYOUT ── */
+.main{
+  max-width:820px;
+  margin:0 auto;
+  padding:28px 24px 60px;
+}
+
+/* ── SCORECARD ── */
+.card{
+  background:var(--white);
+  border-radius:16px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  margin-bottom:16px;
+}
+.card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 20px;
+  background:var(--green-dark);
+}
+.card-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:17px;
+  font-weight:600;
+  color:#fff;
+  letter-spacing:.5px;
+}
+.card-subtitle{
+  font-size:11px;
+  color:rgba(255,255,255,0.45);
+}
+.col-labels{
+  display:grid;
+  grid-template-columns:44px 54px 100px 1fr;
+  background:#f9f8f6;
+  border-bottom:1px solid var(--border);
+}
+.col-lbl{
+  padding:8px 6px;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:var(--ink-light);
+  text-align:center;
+}
+.col-lbl:last-child{text-align:left;padding-left:14px}
+
+/* ── HOLE ROW ── */
+.hole-row{
+  display:grid;
+  grid-template-columns:44px 54px 100px 1fr;
+  border-bottom:1px solid #f0ede8;
+  align-items:center;
+  transition:background .15s;
+}
+.hole-row:last-child{border-bottom:none}
+.hole-row:hover{background:#fdfcfa}
+
+.cell-num{
+  height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:600;
+  color:var(--white);
+  background:var(--green-bright);
+  border-right:1px solid rgba(0,0,0,0.06);
+  font-variant-numeric:tabular-nums;
+}
+.hole-row:nth-child(odd) .cell-num{background:#3d7a4a}
+
+.cell-par{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-right:1px solid #f0ede8;
+  height:52px;
+}
+.par-select{
+  width:38px;
+  border:1px solid #e0dbd2;
+  border-radius:6px;
+  padding:4px 2px;
+  font-size:14px;
+  font-weight:500;
+  color:var(--ink-mid);
+  background:#fff;
+  text-align:center;
+  cursor:pointer;
+  outline:none;
+  font-family:'Inter',sans-serif;
+  transition:border-color .2s;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.par-select:focus{border-color:var(--green-bright);box-shadow:0 0 0 3px rgba(74,140,87,0.12)}
+
+.cell-score{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  height:52px;
+  border-right:1px solid #f0ede8;
+  padding:0 8px;
+}
+.score-btn{
+  width:24px;height:24px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--ink-light);
+  font-size:16px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+  flex-shrink:0;
+}
+.score-btn:hover{background:var(--green-light);border-color:var(--green-bright);color:var(--green-dark)}
+.score-badge{
+  width:36px;height:36px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+  border:2px solid transparent;
+  transition:all .2s;
+  color:var(--ink-light);
+  background:transparent;
+  flex-shrink:0;
+}
+.score-badge.has-score{color:var(--ink)}
+.score-badge.eagle{background:#fef3cd;border-color:var(--gold);color:#7a5c1a}
+.score-badge.birdie{background:#fde8e6;border-color:var(--birdie);color:#922b21;border-radius:0}
+.score-badge.par{background:#fff;border-color:#bbb;color:var(--ink-mid)}
+.score-badge.bogey{background:#e8f4fb;border-color:var(--bogey);color:#1a5276}
+.score-badge.double{background:#d6eaf8;border-color:var(--double);color:#1a5276}
+.score-badge.triple{background:#aed6f1;border-color:var(--triple);color:var(--triple)}
+
+.cell-memo{
+  padding:8px 14px;
+  display:flex;
+  align-items:center;
+}
+.memo-input{
+  width:100%;
+  border:none;
+  outline:none;
+  font-size:13px;
+  color:var(--ink-mid);
+  font-family:'Inter',sans-serif;
+  background:transparent;
+  resize:none;
+  line-height:1.5;
+  min-height:36px;
+  overflow:hidden;
+}
+.memo-input::placeholder{color:#c5c0b8}
+.memo-input:focus{color:var(--ink)}
+
+/* ── SUBTOTAL ROW ── */
+.subtotal-row{
+  display:grid;
+  grid-template-columns:44px 54px 100px 1fr;
+  background:#f9f8f6;
+  border-top:2px solid var(--border);
+}
+.sub-cell{
+  padding:12px 8px;
+  text-align:center;
+  font-size:13px;
+  font-weight:600;
+  color:var(--green-dark);
+}
+.sub-cell:first-child{
+  background:var(--green-dark);
+  color:rgba(255,255,255,0.7);
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;
+}
+.sub-cell .diff-tag{
+  font-size:10px;
+  font-weight:500;
+  color:var(--ink-light);
+  margin-left:4px;
+}
+
+/* ── STATS GRID ── */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin-bottom:24px;
+}
+.stat-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 12px;
+  text-align:center;
+}
+.stat-val{
+  font-size:24px;
+  font-weight:500;
+  color:var(--ink);
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+.stat-lbl{
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  color:var(--ink-light);
+  margin-top:5px;
+}
+.stat-card.eagle-card .stat-val{color:var(--gold)}
+.stat-card.birdie-card .stat-val{color:var(--birdie)}
+.stat-card.bogey-card .stat-val{color:var(--bogey)}
+.stat-card.double-card .stat-val{color:var(--double)}
+
+/* ── ACTIONS ── */
+.actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.btn{
+  height:44px;
+  padding:0 24px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-size:13px;
+  font-weight:500;
+  font-family:'Inter',sans-serif;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:all .2s;
+  letter-spacing:.2px;
+}
+.btn-primary{
+  background:var(--green-dark);
+  color:#fff;
+  border-color:var(--green-dark);
+}
+.btn-primary:hover{background:#14241a}
+.btn-outline{
+  background:#fff;
+  color:var(--ink-mid);
+}
+.btn-outline:hover{background:#f7f4ef;border-color:#bbb}
+.btn-ghost{
+  background:transparent;
+  color:var(--ink-light);
+  border-color:transparent;
+}
+.btn-ghost:hover{background:#f0ede8;color:var(--ink)}
+
+/* ── LEGEND ── */
+.legend{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:24px;
+  padding-top:24px;
+  border-top:1px solid var(--border);
+}
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  color:var(--ink-light);
+}
+.legend-badge{
+  width:20px;height:20px;
+  border-radius:50%;
+  border:2px solid transparent;
+}
+.lb-eagle{background:#fef3cd;border-color:var(--gold)}
+.lb-birdie{background:#fde8e6;border-color:var(--birdie);border-radius:0}
+.lb-par{background:#fff;border-color:#bbb}
+.lb-bogey{background:#e8f4fb;border-color:var(--bogey)}
+.lb-double{background:#d6eaf8;border-color:var(--double)}
+.lb-triple{background:#aed6f1;border-color:var(--triple)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;
+  bottom:28px;
+  left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:var(--green-dark);
+  color:#fff;
+  padding:12px 24px;
+  border-radius:100px;
+  font-size:13px;
+  font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  z-index:999;
+  white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .round-fields{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:repeat(3,1fr)}
+  .card-head{padding:12px 16px}
+  .main{padding:20px 16px 60px}
+  .col-labels,.hole-row,.subtotal-row{
+    grid-template-columns:36px 46px 86px 1fr;
+  }
+  .cell-num{font-size:12px}
+  .score-badge{width:30px;height:30px;font-size:13px}
+  .score-btn{width:20px;height:20px;font-size:14px}
+}
+
+@media print{
+  .site-header,.actions,.legend,.toast,.score-btn{display:none!important}
+  body{background:#fff}
+  .card{border:1px solid #ccc;border-radius:0}
+  .hero{padding:16px;background:#1c3220;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .summary-strip{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">Golf<span>·</span>Score</div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="saveData()" title="保存">💾</button>
+      <button class="icon-btn" onclick="loadData()" title="読み込み">📂</button>
+      <button class="icon-btn" onclick="window.print()" title="印刷">🖨️</button>
+      <button class="icon-btn" onclick="confirmReset()" title="リセット">↺</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO / ROUND INFO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="round-fields">
+      <div class="field-group">
+        <label>コース</label>
+        <input type="text" id="course" placeholder="コース名">
+      </div>
+      <div class="field-group">
+        <label>プレー日</label>
+        <input type="date" id="date">
+      </div>
+      <div class="field-group">
+        <label>プレーヤー</label>
+        <input type="text" id="player" placeholder="お名前">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORE SUMMARY STRIP -->
+<div class="summary-strip">
+  <div class="summary-strip-inner">
+    <div class="strip-item">
+      <div class="strip-val" id="s-out">—</div>
+      <div class="strip-lbl">OUT</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-val" id="s-in">—</div>
+      <div class="strip-lbl">IN</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-val" id="s-total">—</div>
+      <div class="strip-lbl">TOTAL</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-val" id="s-par">72</div>
+      <div class="strip-lbl">PAR</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-val" id="s-diff">—</div>
+      <div class="strip-lbl">+/−</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card eagle-card">
+      <div class="stat-val" id="st-eagle">0</div>
+      <div class="stat-lbl">Eagle↓</div>
+    </div>
+    <div class="stat-card birdie-card">
+      <div class="stat-val" id="st-birdie">0</div>
+      <div class="stat-lbl">Birdie</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="st-par">0</div>
+      <div class="stat-lbl">Par</div>
+    </div>
+    <div class="stat-card bogey-card">
+      <div class="stat-val" id="st-bogey">0</div>
+      <div class="stat-lbl">Bogey</div>
+    </div>
+    <div class="stat-card double-card">
+      <div class="stat-val" id="st-double">0</div>
+      <div class="stat-lbl">Dbl+</div>
+    </div>
+  </div>
+
+  <!-- OUT CARD -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">OUT — Front Nine</span>
+      <span class="card-subtitle">HOLE 1–9</span>
+    </div>
+    <div class="col-labels">
+      <div class="col-lbl">#</div>
+      <div class="col-lbl">Par</div>
+      <div class="col-lbl">Score</div>
+      <div class="col-lbl" style="text-align:left;padding-left:14px">Memo</div>
+    </div>
+    <div id="out-holes"></div>
+    <div class="subtotal-row" id="out-sub">
+      <div class="sub-cell">OUT</div>
+      <div class="sub-cell" id="out-par-sum">—</div>
+      <div class="sub-cell" id="out-score-sum">—</div>
+      <div class="sub-cell" style="text-align:left;padding-left:14px;color:var(--ink-light);font-weight:400;font-size:12px" id="out-diff-cell"></div>
+    </div>
+  </div>
+
+  <!-- IN CARD -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">IN — Back Nine</span>
+      <span class="card-subtitle">HOLE 10–18</span>
+    </div>
+    <div class="col-labels">
+      <div class="col-lbl">#</div>
+      <div class="col-lbl">Par</div>
+      <div class="col-lbl">Score</div>
+      <div class="col-lbl" style="text-align:left;padding-left:14px">Memo</div>
+    </div>
+    <div id="in-holes"></div>
+    <div class="subtotal-row" id="in-sub">
+      <div class="sub-cell">IN</div>
+      <div class="sub-cell" id="in-par-sum">—</div>
+      <div class="sub-cell" id="in-score-sum">—</div>
+      <div class="sub-cell" style="text-align:left;padding-left:14px;color:var(--ink-light);font-weight:400;font-size:12px" id="in-diff-cell"></div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="btn btn-primary" onclick="saveData()">💾 保存する</button>
+    <button class="btn btn-outline" onclick="loadData()">📂 読み込む</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ 印刷する</button>
+    <button class="btn btn-ghost" onclick="confirmReset()">↺ リセット</button>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-badge lb-eagle"></div>Eagle以下</div>
+    <div class="legend-item"><div class="legend-badge lb-birdie"></div>Birdie</div>
+    <div class="legend-item"><div class="legend-badge lb-par"></div>Par</div>
+    <div class="legend-item"><div class="legend-badge lb-bogey"></div>Bogey</div>
+    <div class="legend-item"><div class="legend-badge lb-double"></div>Double</div>
+    <div class="legend-item"><div class="legend-badge lb-triple"></div>Triple+</div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_PARS = [4,4,3,4,5,3,4,5,4, 4,3,4,5,4,3,5,4,4];
+const scores = new Array(19).fill(0);
+const pars   = [...DEFAULT_PARS];
+const memos  = new Array(19).fill('');
+
+function buildHoles(){
+  [document.getElementById('out-holes'), document.getElementById('in-holes')]
+    .forEach((container, half) => {
+      const start = half * 9 + 1;
+      for(let i = start; i < start + 9; i++){
+        const row = document.createElement('div');
+        row.className = 'hole-row';
+        row.id = `row-${i}`;
+        row.innerHTML = `
+          <div class="cell-num">${i}</div>
+          <div class="cell-par">
+            <select class="par-select" id="par-${i}" onchange="changePar(${i})">
+              <option value="3" ${pars[i-1]===3?'selected':''}>3</option>
+              <option value="4" ${pars[i-1]===4?'selected':''}>4</option>
+              <option value="5" ${pars[i-1]===5?'selected':''}>5</option>
+            </select>
+          </div>
+          <div class="cell-score">
+            <button class="score-btn" onclick="adjustScore(${i},-1)" aria-label="マイナス">−</button>
+            <div class="score-badge" id="badge-${i}">—</div>
+            <button class="score-btn" onclick="adjustScore(${i},1)" aria-label="プラス">+</button>
+          </div>
+          <div class="cell-memo">
+            <textarea class="memo-input" id="memo-${i}"
+              placeholder="気になること…"
+              rows="1"
+              oninput="memos[${i}]=this.value;autoH(this)"
+            ></textarea>
+          </div>`;
+        container.appendChild(row);
+      }
+    });
+}
+
+function autoH(el){
+  el.style.height='auto';
+  el.style.height=Math.max(36,el.scrollHeight)+'px';
+}
+
+function changePar(i){
+  pars[i-1] = parseInt(document.getElementById(`par-${i}`).value);
+  updateBadge(i);
+  recalc();
+}
+
+function adjustScore(i, delta){
+  const cur = scores[i] || 0;
+  const next = Math.max(1, Math.min(15, cur + delta));
+  scores[i] = next === cur && delta < 0 && cur === 1 ? 0 : next;
+  if(cur === 1 && delta === -1) scores[i] = 0;
+  updateBadge(i);
+  recalc();
+}
+
+function updateBadge(i){
+  const el = document.getElementById(`badge-${i}`);
+  const s  = scores[i];
+  const p  = pars[i-1];
+  el.className = 'score-badge';
+  if(!s){ el.textContent = '—'; return; }
+  el.textContent = s;
+  el.classList.add('has-score');
+  const d = s - p;
+  if(d <= -2) el.classList.add('eagle');
+  else if(d === -1) el.classList.add('birdie');
+  else if(d === 0)  el.classList.add('par');
+  else if(d === 1)  el.classList.add('bogey');
+  else if(d === 2)  el.classList.add('double');
+  else              el.classList.add('triple');
+}
+
+function recalc(){
+  let outS=0,inS=0,outP=0,inP=0;
+  let eagle=0,birdie=0,par=0,bogey=0,dbl=0;
+  let outCount=0,inCount=0;
+
+  for(let i=1;i<=18;i++){
+    const s=scores[i], p=pars[i-1];
+    if(i<=9){outP+=p; if(s){outS+=s;outCount++;}}
+    else    {inP+=p;  if(s){inS+=s; inCount++;}}
+    if(s){
+      const d=s-p;
+      if(d<=-2) eagle++;
+      else if(d===-1) birdie++;
+      else if(d===0)  par++;
+      else if(d===1)  bogey++;
+      else            dbl++;
+    }
+  }
+
+  const totalP = outP+inP;
+  const totalS = outS+inS;
+  const filled = outCount+inCount;
+
+  setText('s-out',  outS  || '—');
+  setText('s-in',   inS   || '—');
+  setText('s-total',filled ? totalS : '—');
+  setText('s-par',  totalP);
+  setDiff('s-diff', filled ? totalS-totalP : null);
+  setText('out-par-sum',   outP);
+  setText('in-par-sum',    inP);
+  setText('out-score-sum', outS  || '—');
+  setText('in-score-sum',  inS   || '—');
+  setDiffCell('out-diff-cell', outS  ? outS-outP  : null);
+  setDiffCell('in-diff-cell',  inS   ? inS-inP    : null);
+  setText('st-eagle', eagle);
+  setText('st-birdie', birdie);
+  setText('st-par',    par);
+  setText('st-bogey',  bogey);
+  setText('st-double', dbl);
+}
+
+function setText(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
+
+function setDiff(id, v){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.className = 'strip-val';
+  if(v===null){el.textContent='—';return;}
+  el.textContent = (v>0?'+':'')+v;
+  el.classList.add(v<0?'diff-under':v>0?'diff-over':'diff-even');
+}
+
+function setDiffCell(id, v){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(v===null){el.textContent='';return;}
+  const sign = v>0?'+':'';
+  const color = v<0?'#c0392b':v>0?'#2980b9':'#4a8c57';
+  el.innerHTML = `<span style="color:${color};font-weight:500">${sign}${v} vs par</span>`;
+}
+
+function saveData(){
+  const data={
+    course: document.getElementById('course').value,
+    date:   document.getElementById('date').value,
+    player: document.getElementById('player').value,
+    scores:[...scores], pars:[...pars], memos:[...memos]
+  };
+  localStorage.setItem('golf_v2', JSON.stringify(data));
+  toast('保存しました');
+}
+
+function loadData(){
+  const raw = localStorage.getItem('golf_v2');
+  if(!raw){ toast('保存データがありません'); return; }
+  const d = JSON.parse(raw);
+  document.getElementById('course').value = d.course||'';
+  document.getElementById('date').value   = d.date||'';
+  document.getElementById('player').value = d.player||'';
+  d.scores.forEach((s,i)=>{ scores[i]=s; if(i>=1&&i<=18)updateBadge(i); });
+  d.pars.forEach((p,i)=>{
+    pars[i]=p;
+    if(i>=0&&i<18){
+      const el=document.getElementById(`par-${i+1}`);
+      if(el) el.value=p;
+    }
+  });
+  d.memos.forEach((m,i)=>{
+    memos[i]=m;
+    if(i>=1&&i<=18){
+      const el=document.getElementById(`memo-${i}`);
+      if(el){el.value=m;autoH(el);}
+    }
+  });
+  recalc();
+  toast('読み込みました');
+}
+
+function confirmReset(){
+  if(!confirm('全てのスコアをリセットしますか？')) return;
+  for(let i=1;i<=18;i++){
+    scores[i]=0; memos[i]='';
+    pars[i-1]=DEFAULT_PARS[i-1];
+    updateBadge(i);
+    const p=document.getElementById(`par-${i}`);
+    const m=document.getElementById(`memo-${i}`);
+    if(p) p.value=DEFAULT_PARS[i-1];
+    if(m){m.value='';m.style.height='36px';}
+  }
+  recalc();
+  toast('リセットしました');
+}
+
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+// Init
+buildHoles();
+document.getElementById('date').value = new Date().toISOString().split('T')[0];
+recalc();
+window.addEventListener('beforeunload', saveData);
+</script>
+</body>
+</html>
