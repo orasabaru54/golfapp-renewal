@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golf Score — 目標設定</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green-dark:#1c3220;
+  --green-mid:#2d5a35;
+  --green-bright:#4a8c57;
+  --gold:#c8a44a;
+  --cream:#f7f4ef;
+  --white:#ffffff;
+  --ink:#1a1a1a;
+  --ink-mid:#4a4a4a;
+  --ink-light:#8a8a8a;
+  --border:#e0dbd2;
+}
+html{font-size:16px}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+.site-header{
+  background:var(--green-dark);
+  padding:0 24px;
+  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.header-inner{
+  max-width:680px;margin:0 auto;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:600;color:var(--white);letter-spacing:1px;
+  text-decoration:none;
+}
+.logo span{color:var(--gold)}
+.back-btn{
+  height:36px;padding:0 14px;
+  border:1px solid rgba(255,255,255,0.15);border-radius:8px;
+  background:transparent;color:rgba(255,255,255,0.7);
+  font-size:13px;font-weight:500;font-family:'Inter',sans-serif;
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  text-decoration:none;transition:all .2s;
+}
+.back-btn:hover{background:rgba(255,255,255,0.08);color:#fff}
+
+/* ── PAGE TITLE ── */
+.page-hero{
+  background:var(--green-dark);
+  padding:28px 24px 36px;
+}
+.page-hero-inner{max-width:680px;margin:0 auto}
+.page-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:30px;font-weight:600;color:#fff;letter-spacing:.5px;
+  line-height:1.1;
+}
+.page-subtitle{
+  font-size:13px;color:rgba(255,255,255,0.45);margin-top:6px;
+}
+
+/* ── MAIN ── */
+.main{max-width:680px;margin:0 auto;padding:28px 24px 60px}
+
+/* ── SECTION ── */
+.section{margin-bottom:28px}
+.section-label{
+  font-size:10px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--ink-light);
+  margin-bottom:12px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+/* ── SCORE TARGET ── */
+.score-targets{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;
+}
+.score-target-card{
+  background:var(--white);
+  border:1px solid var(--border);border-radius:12px;
+  padding:16px 14px;text-align:center;
+}
+.score-target-card label{
+  display:block;font-size:10px;font-weight:500;
+  letter-spacing:.8px;text-transform:uppercase;
+  color:var(--ink-light);margin-bottom:10px;
+}
+.score-target-card input[type="number"]{
+  width:100%;border:none;outline:none;
+  font-size:32px;font-weight:500;
+  font-family:'Cormorant Garamond',serif;
+  color:var(--green-dark);
+  text-align:center;background:transparent;
+  -moz-appearance:textfield;
+}
+.score-target-card input[type="number"]::-webkit-inner-spin-button,
+.score-target-card input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none}
+.score-target-card .unit{
+  font-size:11px;color:var(--ink-light);margin-top:2px;
+}
+.score-target-card.highlight{
+  border-color:var(--gold);
+  background:linear-gradient(135deg,#fefbf2 0%,#fff 100%);
+}
+.score-target-card.highlight input{color:var(--gold)}
+
+/* ── GOAL ITEMS ── */
+.goals-list{display:flex;flex-direction:column;gap:10px}
+.goal-item{
+  background:var(--white);
+  border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;
+  display:flex;align-items:flex-start;gap:12px;
+  transition:border-color .2s;
+}
+.goal-item:focus-within{border-color:var(--green-bright)}
+.goal-check{
+  width:20px;height:20px;flex-shrink:0;margin-top:1px;
+  accent-color:var(--green-bright);cursor:pointer;
+}
+.goal-text-wrap{flex:1}
+.goal-tag{
+  font-size:9px;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;color:var(--ink-light);
+  margin-bottom:4px;
+}
+.goal-input{
+  width:100%;border:none;outline:none;
+  font-size:14px;color:var(--ink);
+  font-family:'Inter',sans-serif;
+  background:transparent;
+  resize:none;line-height:1.6;
+  min-height:22px;overflow:hidden;
+}
+.goal-input::placeholder{color:#c5c0b8}
+.goal-item.done .goal-input{
+  color:var(--ink-light);text-decoration:line-through;
+}
+.add-goal-btn{
+  width:100%;height:44px;
+  border:1.5px dashed var(--border);border-radius:12px;
+  background:transparent;color:var(--ink-light);
+  font-size:13px;font-family:'Inter',sans-serif;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.add-goal-btn:hover{border-color:var(--green-bright);color:var(--green-bright);background:#f4fbf5}
+
+/* ── AREAS ── */
+.area-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.area-card{
+  background:var(--white);border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;transition:border-color .2s;
+}
+.area-card:focus-within{border-color:var(--green-bright)}
+.area-icon{font-size:20px;margin-bottom:6px}
+.area-name{
+  font-size:11px;font-weight:600;letter-spacing:.5px;
+  color:var(--ink-mid);margin-bottom:8px;
+}
+.area-textarea{
+  width:100%;border:none;outline:none;
+  font-size:13px;color:var(--ink);
+  font-family:'Inter',sans-serif;
+  background:transparent;resize:none;
+  line-height:1.6;min-height:52px;overflow:hidden;
+}
+.area-textarea::placeholder{color:#c5c0b8}
+
+/* ── MEMO ── */
+.big-memo{
+  background:var(--white);border:1px solid var(--border);border-radius:12px;
+  padding:16px;width:100%;
+  font-size:14px;color:var(--ink);
+  font-family:'Inter',sans-serif;
+  line-height:1.8;resize:none;min-height:120px;
+  outline:none;transition:border-color .2s;overflow:hidden;
+}
+.big-memo::placeholder{color:#c5c0b8}
+.big-memo:focus{border-color:var(--green-bright)}
+
+/* ── ACTIONS ── */
+.actions{
+  display:flex;gap:10px;justify-content:center;margin-top:32px;flex-wrap:wrap;
+}
+.btn{
+  height:44px;padding:0 24px;border-radius:10px;
+  border:1px solid var(--border);
+  font-size:13px;font-weight:500;font-family:'Inter',sans-serif;
+  cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition:all .2s;
+}
+.btn-primary{background:var(--green-dark);color:#fff;border-color:var(--green-dark)}
+.btn-primary:hover{background:#14241a}
+.btn-outline{background:#fff;color:var(--ink-mid)}
+.btn-outline:hover{background:#f7f4ef;border-color:#bbb}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{margin-top:12px}
+.progress-head{
+  display:flex;justify-content:space-between;
+  font-size:12px;color:var(--ink-light);margin-bottom:6px;
+}
+.progress-bar{
+  height:6px;background:#e8e4dd;border-radius:100px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:var(--green-bright);border-radius:100px;
+  transition:width .4s ease;
+}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:var(--green-dark);color:#fff;
+  padding:12px 24px;border-radius:100px;
+  font-size:13px;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  z-index:999;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:600px){
+  .score-targets{grid-template-columns:1fr 1fr}
+  .area-grid{grid-template-columns:1fr}
+  .main{padding:20px 16px 60px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Golf<span>·</span>Score</a>
+    <a href="index.html" class="back-btn">← スコアカードへ</a>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-title">目標設定</div>
+    <div class="page-subtitle">スコアや技術の目標を書き留めておきましょう</div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- スコア目標 -->
+  <div class="section">
+    <div class="section-label">スコア目標</div>
+    <div class="score-targets">
+      <div class="score-target-card highlight">
+        <label>目標スコア</label>
+        <input type="number" id="target-score" min="40" max="150" placeholder="90">
+        <div class="unit">打</div>
+      </div>
+      <div class="score-target-card">
+        <label>現在の平均</label>
+        <input type="number" id="avg-score" min="40" max="150" placeholder="105">
+        <div class="unit">打</div>
+      </div>
+      <div class="score-target-card">
+        <label>達成期限</label>
+        <input type="number" id="target-month" min="1" max="24" placeholder="6">
+        <div class="unit">ヶ月後</div>
+      </div>
+    </div>
+    <div class="progress-wrap" id="progress-wrap" style="display:none">
+      <div class="progress-head">
+        <span>現在の平均から目標まで</span>
+        <span id="progress-text"></span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 個別目標リスト -->
+  <div class="section">
+    <div class="section-label">やること・意識すること</div>
+    <div class="goals-list" id="goals-list"></div>
+    <button class="add-goal-btn" onclick="addGoal()" style="margin-top:10px">＋ 目標を追加する</button>
+  </div>
+
+  <!-- エリア別 -->
+  <div class="section">
+    <div class="section-label">カテゴリ別メモ</div>
+    <div class="area-grid">
+      <div class="area-card">
+        <div class="area-icon">🏌️</div>
+        <div class="area-name">ドライバー</div>
+        <textarea class="area-textarea" id="area-driver" placeholder="飛距離・方向性など…" oninput="autoH(this)"></textarea>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">⛳</div>
+        <div class="area-name">アイアン</div>
+        <textarea class="area-textarea" id="area-iron" placeholder="番手選び・精度など…" oninput="autoH(this)"></textarea>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">🟡</div>
+        <div class="area-name">アプローチ</div>
+        <textarea class="area-textarea" id="area-approach" placeholder="距離感・ライン読みなど…" oninput="autoH(this)"></textarea>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">🏳️</div>
+        <div class="area-name">パター</div>
+        <textarea class="area-textarea" id="area-putt" placeholder="3パット撲滅・距離感など…" oninput="autoH(this)"></textarea>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">🪣</div>
+        <div class="area-name">バンカー</div>
+        <textarea class="area-textarea" id="area-bunker" placeholder="脱出率・練習頻度など…" oninput="autoH(this)"></textarea>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">🧠</div>
+        <div class="area-name">コースマネジメント</div>
+        <textarea class="area-textarea" id="area-mental" placeholder="攻め方・リスク管理など…" oninput="autoH(this)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- フリーメモ -->
+  <div class="section">
+    <div class="section-label">自由メモ</div>
+    <textarea class="big-memo" id="free-memo" placeholder="レッスンで言われたこと、気づき、やりたい練習など…" oninput="autoH(this)"></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="saveData()">💾 保存する</button>
+    <button class="btn btn-outline" onclick="clearAll()">↺ クリア</button>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let goalCount = 0;
+
+function autoH(el){
+  el.style.height='auto';
+  el.style.height=Math.max(el.scrollHeight,52)+'px';
+}
+
+function addGoal(text='', done=false){
+  goalCount++;
+  const id = goalCount;
+  const list = document.getElementById('goals-list');
+  const item = document.createElement('div');
+  item.className = 'goal-item' + (done?' done':'');
+  item.id = `goal-${id}`;
+  item.innerHTML = `
+    <input type="checkbox" class="goal-check" id="check-${id}" ${done?'checked':''}
+      onchange="toggleDone(${id})">
+    <div class="goal-text-wrap">
+      <div class="goal-tag">目標 ${id}</div>
+      <textarea class="goal-input" id="gtxt-${id}"
+        placeholder="例：ティーショットをフェアウェイキープする"
+        rows="1"
+        oninput="autoH(this)">${text}</textarea>
+    </div>
+    <button onclick="removeGoal(${id})" style="border:none;background:transparent;color:#ccc;cursor:pointer;font-size:18px;line-height:1;padding:0 2px;flex-shrink:0" title="削除">×</button>`;
+  list.appendChild(item);
+  if(text){
+    const ta = document.getElementById(`gtxt-${id}`);
+    setTimeout(()=>autoH(ta),0);
+  }
+  updateProgress();
+}
+
+function toggleDone(id){
+  const item = document.getElementById(`goal-${id}`);
+  const checked = document.getElementById(`check-${id}`).checked;
+  item.classList.toggle('done', checked);
+  updateProgress();
+}
+
+function removeGoal(id){
+  const item = document.getElementById(`goal-${id}`);
+  if(item) item.remove();
+  updateProgress();
+}
+
+function updateProgress(){
+  const items = document.querySelectorAll('.goal-item');
+  const done  = document.querySelectorAll('.goal-item.done');
+  const wrap  = document.getElementById('progress-wrap');
+  const fill  = document.getElementById('progress-fill');
+  const txt   = document.getElementById('progress-text');
+
+  const ts = parseInt(document.getElementById('target-score').value)||0;
+  const av = parseInt(document.getElementById('avg-score').value)||0;
+
+  if(ts && av && av > ts){
+    wrap.style.display='block';
+    const pct = Math.min(100, Math.round(((av-ts)/av)*100));
+    fill.style.width = (100-pct)+'%';
+    txt.textContent = `${av}打 → ${ts}打（あと${av-ts}打縮める）`;
+  } else if(items.length > 0){
+    wrap.style.display='block';
+    const pct = items.length ? Math.round((done.length/items.length)*100) : 0;
+    fill.style.width = pct+'%';
+    txt.textContent = `${done.length} / ${items.length} 達成`;
+  } else {
+    wrap.style.display='none';
+  }
+}
+
+function collectGoals(){
+  const items = document.querySelectorAll('.goal-item');
+  return Array.from(items).map(item => {
+    const id = item.id.replace('goal-','');
+    return {
+      text: document.getElementById(`gtxt-${id}`)?.value || '',
+      done: item.classList.contains('done')
+    };
+  });
+}
+
+function saveData(){
+  const data = {
+    targetScore: document.getElementById('target-score').value,
+    avgScore:    document.getElementById('avg-score').value,
+    targetMonth: document.getElementById('target-month').value,
+    goals:       collectGoals(),
+    driver:      document.getElementById('area-driver').value,
+    iron:        document.getElementById('area-iron').value,
+    approach:    document.getElementById('area-approach').value,
+    putt:        document.getElementById('area-putt').value,
+    bunker:      document.getElementById('area-bunker').value,
+    mental:      document.getElementById('area-mental').value,
+    freeMemo:    document.getElementById('free-memo').value,
+  };
+  localStorage.setItem('golf_goals', JSON.stringify(data));
+  toast('保存しました');
+}
+
+function loadData(){
+  const raw = localStorage.getItem('golf_goals');
+  if(!raw) return;
+  const d = JSON.parse(raw);
+  document.getElementById('target-score').value = d.targetScore||'';
+  document.getElementById('avg-score').value    = d.avgScore||'';
+  document.getElementById('target-month').value = d.targetMonth||'';
+  const areas = ['driver','iron','approach','putt','bunker','mental'];
+  areas.forEach(k => {
+    const el = document.getElementById(`area-${k}`);
+    if(el){ el.value = d[k]||''; autoH(el); }
+  });
+  const memo = document.getElementById('free-memo');
+  memo.value = d.freeMemo||''; autoH(memo);
+  if(d.goals && d.goals.length){
+    d.goals.forEach(g => addGoal(g.text, g.done));
+  }
+  updateProgress();
+}
+
+function clearAll(){
+  if(!confirm('全ての目標をクリアしますか？')) return;
+  ['target-score','avg-score','target-month'].forEach(id => {
+    document.getElementById(id).value='';
+  });
+  document.getElementById('goals-list').innerHTML='';
+  goalCount=0;
+  ['driver','iron','approach','putt','bunker','mental'].forEach(k=>{
+    const el=document.getElementById(`area-${k}`);
+    if(el){el.value='';el.style.height='52px';}
+  });
+  const memo=document.getElementById('free-memo');
+  memo.value='';memo.style.height='120px';
+  document.getElementById('progress-wrap').style.display='none';
+  toast('クリアしました');
+}
+
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+['target-score','avg-score','target-month'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateProgress);
+});
+
+loadData();
+if(document.querySelectorAll('.goal-item').length===0) addGoal();
+window.addEventListener('beforeunload', saveData);
+</script>
+</body>
+</html>
